@@ -29,10 +29,14 @@ class WifiClient:
 
     def connect(self):
         # and connect
-        print("connecting to", self.ssid)
-        self.sta_if.connect(self.ssid, self.passwd)
-        print("waiting some seconds")
-        time.sleep(5)
+        if not self.sta_if.isconnected():
+            print("connecting to", self.ssid)
+            self.sta_if.connect(self.ssid, self.passwd)
+
+            # waiting till connected
+            while not self.sta_if.isconnected():
+                pass
+
         print("connected", self.sta_if.isconnected())
         print("IP", self.sta_if.ifconfig())
 
