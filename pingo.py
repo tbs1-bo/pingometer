@@ -69,6 +69,18 @@ class Servo:
             time.sleep(0.5)
 
 
+def deepsleep():
+    """Go into deep sleep mode. GPIO16 (D0) must be connected to RST
+    (RST)."""
+
+    rtc = machine.RTC()
+    rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEP_SLEEP)
+    # set alarm time (in ms)
+    rtc.alarm(rtc.ALARM0, 10000)
+    # sleep
+    machine.deepsleep()
+
+
 def main():
     print("connecting to wifi")
     wifi = WifiClient(ssid=SSID, passwd=PASS)
@@ -79,6 +91,10 @@ def main():
                   dc_defaults=[LEFT, RIGHT, CENTER])
     servo.left_right_center()
     # servo.left_to_right()
+
+    
+    # go into sleep mode
+    #deepsleep()
 
 
 if __name__ == "__main__":
