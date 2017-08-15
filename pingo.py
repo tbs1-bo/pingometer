@@ -1,7 +1,9 @@
 import machine
+import network
 import time
 
-PIN = 12
+# configure the servo
+SERVOPIN = 12
 FREQUENCY = 50  # Hz
 
 # common duty cyles
@@ -9,6 +11,28 @@ FREQUENCY = 50  # Hz
 LEFT = 25
 RIGHT = 124
 CENTER = 77
+
+# configure network access
+SSID = "PectroNet Gastzugang"
+PASS = "123456543212"
+
+
+class WifiClient:
+    def __init__(self, ssid, passwd):
+        self.ssid = ssid
+        self.passwd = passwd
+
+        # Create a station interface
+        self.sta_if = network.WLAN(network.STA_IF)
+        # activate the interface
+        self.sta_if.active(True)
+
+    def connect(self):
+        # and connect
+        print("connecting to", self.ssid)
+        self.sta_if.connect(self.ssid, self.passwd)
+        print("connected", self.sta_if.isconnected())
+        print("IP", self.sta_if.ifconfig())
 
 
 class Servo:
@@ -44,10 +68,15 @@ class Servo:
 
 
 def main():
-    print("starting pingo on pin", PIN, "with", FREQUENCY, "Hz")
-    servo = Servo(pin=PIN, freq=FREQUENCY, dc_defaults=[LEFT, RIGHT, CENTER])
+    print("connecting to wifi")
+    wifi = WifiClient(ssid=SSID, passwd=PASS)
+    wifi.connect()
+
+    print("starting servo on pin", SERVOPIN, "with", FREQUENCY, "Hz")
+    servo = Servo(pin=SERVOPIN, freq=FREQUENCY,
+                  dc_defaults=[LEFT, RIGHT, CENTER])
     servo.left_right_center()
-    #servo.left_to_right()
+    # servo.left_to_right()
 
 
 if __name__ == "__main__":
