@@ -3,7 +3,7 @@ import network
 import time
 
 # configure the servo
-SERVOPIN = 12
+SERVOPIN = 12  # GPIO12 (D6)
 FREQUENCY = 50  # Hz
 
 # common duty cyles
