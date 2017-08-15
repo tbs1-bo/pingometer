@@ -1,6 +1,7 @@
 import machine
 import network
 import time
+import usocket
 
 # configure the servo
 SERVOPIN = 12  # GPIO12 (D6)
@@ -15,6 +16,10 @@ CENTER = 77
 # configure network access
 SSID = "PectroNet Gastzugang"
 PASS = "123456543212"
+
+# IP address checking for reachability
+#           www.google.de
+IP, PORT = "172.217.22.195", 80
 
 
 class WifiClient:
@@ -39,6 +44,14 @@ class WifiClient:
 
         print("connected", self.sta_if.isconnected())
         print("IP", self.sta_if.ifconfig())
+
+    def is_reachable(self, ip, port):
+        socket = usocket.socket()
+        try:
+            socket.connect((ip, port))
+            return True
+        except:
+            return False
 
 
 class Servo:
@@ -96,7 +109,12 @@ def main():
     servo.left_right_center()
     # servo.left_to_right()
 
-    
+    # checking reachability
+    if wifi.is_reachable(IP, PORT):
+        print(IP, "reachable")
+    else:
+        print(IP, "unreachable")
+
     # go into sleep mode
     #deepsleep()
 
