@@ -4,10 +4,8 @@
 #import webrepl
 #webrepl.start()
 
-import connect
 import gc
 import pingo
 
 gc.collect()
-connect.main()
 pingo.main()
