@@ -31,6 +31,8 @@ class WifiClient:
         # and connect
         print("connecting to", self.ssid)
         self.sta_if.connect(self.ssid, self.passwd)
+        print("waiting some seconds")
+        time.sleep(5)
         print("connected", self.sta_if.isconnected())
         print("IP", self.sta_if.ifconfig())
 
