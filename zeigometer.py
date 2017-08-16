@@ -47,6 +47,28 @@ class WifiClient:
     def disconnect(self):
         self.sta_if.disconnect()
 
+    def http_get_value(self, url):
+        _, _, host, path = url.split('/', 3)
+        addr = socket.getaddrinfo(host, 80)[0][-1]
+        s = socket.socket()
+        s.connect(addr)
+        s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host),
+                     'utf8'))
+
+        header_payload_separator = b'\r\n\r\n'
+        while True:
+            data = s.recv(100)
+
+            if header_payload_separator in data:
+                # the last 100 Bytes should contain the payload
+                val = data.split(header_payload_separator)[-1]
+                print("converting", val)
+                val = int(val.strip())
+                s.close()
+                return val
+
+        s.close()
+
 
 class Servo:
     def __init__(self, pin, freq, dc_defaults):
@@ -79,37 +101,17 @@ class Servo:
             self.pwm.duty(dc)
             time.sleep(0.5)
 
-    def subscribe_callback(self, msg, _topic):
-        """Calback method for a topic. Value in msg will be interpreted as
-        integer percent value between 0 and 100."""
+    def change_needle(self, perc_right):
+        """Change the position of the needle from 0 (left) to 100 (right)."""
 
-        print("msg received", msg, _topic)
-        val_percent = int(msg)
-        # convert percent value in values between 0 and 1023
-        dc = val_percent * 1023 / 100
+        if not 0 <= perc_right <= 100:
+            print("wrong value range")
+            return
+        
+        delta_lr = self.right - self.left
+        dc = self.left + delta_lr * perc_right / 100
         print("change dc to", int(dc))
         self.pwm.duty(int(dc))
-
-
-def http_get_value(url):
-    _, _, host, path = url.split('/', 3)
-    addr = socket.getaddrinfo(host, 80)[0][-1]
-    s = socket.socket()
-    s.connect(addr)
-    s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host),
-                 'utf8'))
-    while True:
-        data = s.recv(100)
-
-        if b"\r\n\r\n" in data:
-            # the last 100 Bytes should contain the payload
-            val = data.split(b"\r\n\r\n")[-1]
-            print("converting", val)
-            val = int(val.strip())
-            s.close()
-            return val
-
-    s.close()
 
 
 def deepsleep():
