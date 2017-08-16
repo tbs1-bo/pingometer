@@ -129,20 +129,23 @@ def main():
           config.FREQUENCY, "Hz")
     servo = Servo(pin=config.SERVOPIN, freq=config.FREQUENCY,
                   dc_defaults=[config.LEFT, config.RIGHT, config.CENTER])
-    servo.left_right_center()
+    # servo.left_right_center()
     # servo.left_to_right()
 
-    val = wifi.http_get_value(config.DATA_URL)
-    if val is not None:
-        print("Got value", val)
-        servo.change_needle(val)
+    try:
+        val = wifi.http_get_value(config.DATA_URL)
+        if val is not None:
+            print("Got value", val)
+            servo.change_needle(val)
+    except Exception as ex:
+        print("Error occured", ex)
 
     print("disconnecting from WiFi")
     wifi.disconnect()
 
     # go into sleep mode
-    #print("going into deep sleep mode")
-    #deepsleep()
+    print("going into deep sleep mode")
+    deepsleep()
 
 
 if __name__ == "__main__":
