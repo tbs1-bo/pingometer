@@ -105,12 +105,14 @@ def deepsleep():
 
     # wait some time before going into deesleep mode - otherwise no
     # intervention possible when problems occur.
-    time.sleep(5000)
+    time.sleep(5)
     rtc = machine.RTC()
     rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
     # set alarm time (in ms)
+    print("setting alarm", config.DEEPSLEEP_TIME)
     rtc.alarm(rtc.ALARM0, config.DEEPSLEEP_TIME)
     # sleep
+    print("starting deep sleep...")
     machine.deepsleep()
 
 
