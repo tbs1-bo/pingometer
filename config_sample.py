@@ -14,8 +14,9 @@ DEEPSLEEP_TIME = 20000
 # common duty cyles
 # somewhere between 0 and 1023
 LEFT = 25
-RIGHT = 124
-CENTER = 77
+RIGHT = 125
+CENTER = 75
+
 
 # Location for data value that should be retrieved
 DATA_URL = "http://www.example.com/data.txt"
