@@ -80,15 +80,15 @@ class Servo:
             self.change_needle(rightiness)
             time.sleep(0.5)
 
-    def change_needle(self, perc_right):
+    def change_needle(self, rightiness):
         """Change the position of the needle from 0 (left) to 100 (right)."""
 
-        if not 0 <= perc_right <= 100:
+        if not 0 <= rightiness <= 100:
             print("ignoring wrong value range")
             return
         
         delta_lr = self.right - self.left
-        dc = self.left + delta_lr * perc_right / 100
+        dc = self.left + delta_lr * rightiness / 100
         print("change dc to", int(dc))
         self.pwm.duty(int(dc))
 
