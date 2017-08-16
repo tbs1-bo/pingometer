@@ -1,4 +1,4 @@
-Pingometer
+Zeigometer
 ==========
 
 A servo is connected to an ESP8266, reads analog values from an MQTT
