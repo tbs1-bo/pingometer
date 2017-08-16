@@ -92,6 +92,7 @@ class Servo:
 
         print("center")
         self.pwm.duty(self.center)
+        time.sleep(1)
 
     def left_to_right(self):
         stepsize = int((self.right - self.left) / 10)
