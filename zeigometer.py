@@ -2,6 +2,7 @@ import machine
 import network
 import time
 import usocket
+from umqtt.simple import MQTTClient
 
 # configure the servo
 SERVOPIN = 12  # GPIO12 (D6)
@@ -16,6 +17,12 @@ CENTER = 77
 # configure network access
 SSID = "PectroNet Gastzugang"
 PASS = "123456543212"
+
+# config for mqtt broker
+MQTT_HOST = "iot.eclipse.org"
+# topic to get information from
+MQTT_TOPIC = "zeigometer/test"
+MQTT_WAIT_TIME = 5000 #  miliseconds
 
 # IP address checking for reachability
 #           www.google.de
@@ -85,6 +92,9 @@ class Servo:
             self.pwm.duty(dc)
             time.sleep(0.5)
 
+    def subscribe_callback(self, msg, topic):
+        pass
+
 
 def deepsleep():
     """Go into deep sleep mode. GPIO16 (D0) must be connected to RST
@@ -108,6 +118,16 @@ def main():
                   dc_defaults=[LEFT, RIGHT, CENTER])
     servo.left_right_center()
     # servo.left_to_right()
+
+    # fetch value from broker
+    mqtt = MQTTClient("zeigometer", MQTT_HOST)
+    mqtt.set_callback(servo.subscribe_callback)
+    mqtt.connect()
+    mqtt.subscribe(MQTT_TOPIC)
+    # wait for msg - non-blocking
+    mqtt.chk_msg()
+    time.sleep(MQTT_WAIT_TIME)
+    mqtt.disconnect()
 
     # checking reachability
     if wifi.is_reachable(IP, PORT):
