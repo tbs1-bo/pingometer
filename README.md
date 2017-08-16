@@ -17,3 +17,7 @@ Sketch
 - GPIO16 and REST are connected to awake the ESP8266 from deep sleep
   mode.
 
+Configuration
+-------------
+
+Look into configuration.py to set the correct values.
