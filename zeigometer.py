@@ -8,6 +8,9 @@ from umqtt.simple import MQTTClient
 SERVOPIN = 12  # GPIO12 (D6)
 FREQUENCY = 50  # Hz
 
+# how many ms to sleep in deep sleep mode
+DEEPSLEEP_TIME = 20000
+
 # common duty cyles
 # somewhere between 0 and 1023
 LEFT = 25
@@ -107,10 +110,13 @@ def deepsleep():
     """Go into deep sleep mode. GPIO16 (D0) must be connected to RST
     (RST)."""
 
+    # wait some time before going into deesleep mode - otherwise no
+    # intervention possible when problems occur.
+    time.sleep(5000)
     rtc = machine.RTC()
-    rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEP_SLEEP)
+    rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
     # set alarm time (in ms)
-    rtc.alarm(rtc.ALARM0, 10000)
+    rtc.alarm(rtc.ALARM0, DEEPSLEEP_TIME)
     # sleep
     machine.deepsleep()
 
