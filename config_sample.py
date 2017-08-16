@@ -15,8 +15,6 @@ DEEPSLEEP_TIME = 20000
 # somewhere between 0 and 1023
 LEFT = 25
 RIGHT = 125
-CENTER = 75
-
 
 # Location for data value that should be retrieved
 DATA_URL = "http://www.example.com/data.txt"

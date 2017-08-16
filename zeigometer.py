@@ -53,42 +53,38 @@ class WifiClient:
 
 
 class Servo:
-    def __init__(self, pin, freq, dc_defaults):
+    def __init__(self, pin, freq, dc_left, dc_right):
         """Create servo connected with frequency freq to pin. dc_defaults
-        contains default duty cylces for values of left, right and
-        center.
+        contains default duty cylces for values of left and right.
         """
 
         pin = machine.Pin(pin)
         self.pwm = machine.PWM(pin, freq=freq)
-        self.left, self.right, self.center = dc_defaults
+        self.left, self.right = dc_left, dc_right
 
     def left_right_center(self):
         print("turn left")
-        self.pwm.duty(self.left)
+        self.change_needle(0)
         time.sleep(1)
 
         print("turn right")
-        self.pwm.duty(self.right)
+        self.change_needle(100)
         time.sleep(1)
 
         print("center")
-        self.pwm.duty(self.center)
+        self.change_needle(100)
         time.sleep(1)
 
     def left_to_right(self):
-        stepsize = int((self.right - self.left) / 10)
-
-        for dc in range(self.left, self.right+1, stepsize):
-            print("dc", dc)
-            self.pwm.duty(dc)
+        for rightiness in range(100):
+            self.change_needle(rightiness)
             time.sleep(0.5)
 
     def change_needle(self, perc_right):
         """Change the position of the needle from 0 (left) to 100 (right)."""
 
         if not 0 <= perc_right <= 100:
-            print("wrong value range")
+            print("ignoring wrong value range")
             return
         
         delta_lr = self.right - self.left
@@ -126,7 +122,7 @@ def main():
     print("starting servo on pin", config.SERVOPIN, "with",
           config.FREQUENCY, "Hz")
     servo = Servo(pin=config.SERVOPIN, freq=config.FREQUENCY,
-                  dc_defaults=[config.LEFT, config.RIGHT, config.CENTER])
+                  dc_left=config.LEFT, dc_right=config.RIGHT)
     # servo.left_right_center()
     # servo.left_to_right()
 
