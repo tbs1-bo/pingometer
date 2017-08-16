@@ -18,19 +18,11 @@ RIGHT = 124
 CENTER = 77
 
 # configure network access
-SSID = "PectroNet Gastzugang"
-PASS = "123456543212"
+SSID = "MyNetwork"
+PASS = "MyPassword"
 
-# config for mqtt broker
-MQTT_HOST = "iot.eclipse.org"
-# topic to get information from
-MQTT_TOPIC = "zeigometer/test"
-# time to await an answer of the broker
-MQTT_WAIT_TIME = 5000 #  miliseconds
-
-# IP address checking for reachability
-#           www.google.de
-IP, PORT = "172.217.22.195", 80
+# Location for data value that should be retrieved
+DATA_URL = "http://www.bakera.de/data.txt"
 
 
 class WifiClient:
