@@ -5,7 +5,7 @@
 #webrepl.start()
 
 import gc
-import pingo
+import zeigometer
 
 gc.collect()
-pingo.main()
+zeigometer.main()
