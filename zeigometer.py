@@ -92,8 +92,14 @@ class Servo:
             self.pwm.duty(dc)
             time.sleep(0.5)
 
-    def subscribe_callback(self, msg, topic):
-        pass
+    def subscribe_callback(self, msg, _topic):
+        """Calback method for a topic. Value in msg will be interpreted as
+        integer percent value between 0 and 100."""
+
+        val_percent = int(msg)
+        # convert percent value in values between 0 and 1023
+        dc = val_percent * 1023 / 100
+        self.pwm.duty(int(dc))
 
 
 def deepsleep():
