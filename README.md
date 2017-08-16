@@ -20,4 +20,4 @@ Sketch
 Configuration
 -------------
 
-Look into configuration.py to set the correct values.
+Move `config_sample.py` to `config.py` and set the correct values.
