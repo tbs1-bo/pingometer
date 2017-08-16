@@ -2,6 +2,7 @@ import machine
 import network
 import time
 import socket
+import credentials
 
 # configure the servo
 SERVOPIN = 12  # GPIO12 (D6)
@@ -15,10 +16,6 @@ DEEPSLEEP_TIME = 20000
 LEFT = 25
 RIGHT = 124
 CENTER = 77
-
-# configure network access
-SSID = "MyNetwork"
-PASS = "MyPassword"
 
 # Location for data value that should be retrieved
 DATA_URL = "http://www.bakera.de/data.txt"
@@ -136,7 +133,7 @@ def callback(msg, topic):
 
 def main():
     print("connecting to wifi")
-    wifi = WifiClient(ssid=SSID, passwd=PASS)
+    wifi = WifiClient(ssid=credentials.SSID, passwd=credentials.PASS)
     wifi.connect()
 
     """print("starting servo on pin", SERVOPIN, "with", FREQUENCY, "Hz")
