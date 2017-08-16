@@ -139,18 +139,22 @@ def main():
     wifi = WifiClient(ssid=credentials.SSID, passwd=credentials.PASS)
     wifi.connect()
 
-    """print("starting servo on pin", SERVOPIN, "with", FREQUENCY, "Hz")
+    print("starting servo on pin", SERVOPIN, "with", FREQUENCY, "Hz")
     servo = Servo(pin=SERVOPIN, freq=FREQUENCY,
                   dc_defaults=[LEFT, RIGHT, CENTER])
     servo.left_right_center()
-    # servo.left_to_right()"""
+    # servo.left_to_right()
 
-    val = http_get_value(DATA_URL)
+    val = wifi.http_get_value(DATA_URL)
     if val is not None:
         print("Got value", val)
+        servo.change_needle(val)
 
+    print("disconnecting from WiFi")
     wifi.disconnect()
+
     # go into sleep mode
+    #print("going into deep sleep mode")
     #deepsleep()
 
 
