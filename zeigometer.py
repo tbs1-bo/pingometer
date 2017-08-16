@@ -10,23 +10,20 @@ class WifiClient:
         self.ssid = ssid
         self.passwd = passwd
 
-        # Create a station interface
+        # Create and activate station interface
         self.sta_if = network.WLAN(network.STA_IF)
-        # activate the interface
         self.sta_if.active(True)
 
     def connect(self):
-        # and connect
         if not self.sta_if.isconnected():
             print("connecting to", self.ssid)
             self.sta_if.connect(self.ssid, self.passwd)
 
-            # waiting till connected
+            # waiting until connected
             while not self.sta_if.isconnected():
                 pass
 
-        print("connected", self.sta_if.isconnected())
-        print("IP", self.sta_if.ifconfig())
+        print("connected with IP", self.sta_if.ifconfig())
 
     def disconnect(self):
         self.sta_if.disconnect()
@@ -39,6 +36,7 @@ class WifiClient:
         s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host),
                      'utf8'))
 
+        # two new lines separate the header from the payload
         header_payload_separator = b'\r\n\r\n'
         while True:
             data = s.recv(100)
