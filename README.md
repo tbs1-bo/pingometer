@@ -21,3 +21,15 @@ Configuration
 -------------
 
 Move `config_sample.py` to `config.py` and set the correct values.
+
+Making
+------
+
+Some images during the making of the project.
+
+![esp connected](doc/esp_connected.jpg)
+
+![servo glued](doc/servo_glued.jpg)
+
+![servo on front hole](doc/servor_front_hole.jpg)
+
