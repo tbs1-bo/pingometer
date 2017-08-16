@@ -1,6 +1,8 @@
 Zeigometer
 ==========
 
+![zeigometer](doc/zeigometer.jpg)
+
 A servo is connected to an ESP8266, reads analog values from a web ressource.
 sends the value to a servo that visualizes these value on a
 scale. The project is mainly inspired by the
