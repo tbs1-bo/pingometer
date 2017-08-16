@@ -2,23 +2,7 @@ import machine
 import network
 import time
 import socket
-import credentials
-
-# configure the servo
-SERVOPIN = 12  # GPIO12 (D6)
-FREQUENCY = 50  # Hz
-
-# how many ms to sleep in deep sleep mode
-DEEPSLEEP_TIME = 20000
-
-# common duty cyles
-# somewhere between 0 and 1023
-LEFT = 25
-RIGHT = 124
-CENTER = 77
-
-# Location for data value that should be retrieved
-DATA_URL = "http://www.bakera.de/data.txt"
+import config
 
 
 class WifiClient:
@@ -78,7 +62,7 @@ class Servo:
         """
 
         pin = machine.Pin(pin)
-        self.pwm = machine.PWM(pin, freq=FREQUENCY)
+        self.pwm = machine.PWM(pin, freq=freq)
         self.left, self.right, self.center = dc_defaults
 
     def left_right_center(self):
@@ -125,7 +109,7 @@ def deepsleep():
     rtc = machine.RTC()
     rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
     # set alarm time (in ms)
-    rtc.alarm(rtc.ALARM0, DEEPSLEEP_TIME)
+    rtc.alarm(rtc.ALARM0, config.DEEPSLEEP_TIME)
     # sleep
     machine.deepsleep()
 
@@ -136,16 +120,17 @@ def callback(msg, topic):
 
 def main():
     print("connecting to wifi")
-    wifi = WifiClient(ssid=credentials.SSID, passwd=credentials.PASS)
+    wifi = WifiClient(ssid=config.SSID, passwd=config.PASS)
     wifi.connect()
 
-    print("starting servo on pin", SERVOPIN, "with", FREQUENCY, "Hz")
-    servo = Servo(pin=SERVOPIN, freq=FREQUENCY,
-                  dc_defaults=[LEFT, RIGHT, CENTER])
+    print("starting servo on pin", config.SERVOPIN, "with",
+          config.FREQUENCY, "Hz")
+    servo = Servo(pin=config.SERVOPIN, freq=config.FREQUENCY,
+                  dc_defaults=[config.LEFT, config.RIGHT, config.CENTER])
     servo.left_right_center()
     # servo.left_to_right()
 
-    val = wifi.http_get_value(DATA_URL)
+    val = wifi.http_get_value(config.DATA_URL)
     if val is not None:
         print("Got value", val)
         servo.change_needle(val)
