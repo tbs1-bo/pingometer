@@ -44,7 +44,7 @@ class WifiClient:
         print("connected", self.sta_if.isconnected())
         print("IP", self.sta_if.ifconfig())
 
-    def diconnect(self):
+    def disconnect(self):
         self.sta_if.disconnect()
 
 
