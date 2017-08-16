@@ -22,6 +22,7 @@ PASS = "123456543212"
 MQTT_HOST = "iot.eclipse.org"
 # topic to get information from
 MQTT_TOPIC = "zeigometer/test"
+# time to await an answer of the broker
 MQTT_WAIT_TIME = 5000 #  miliseconds
 
 # IP address checking for reachability
