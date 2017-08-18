@@ -82,3 +82,7 @@ power. The easiest way to do this would be to use a small
 powerbank. However, since the ESP8266 has very low power consumption
 of about 20 µA in deep sleep mode, the powerbank may turn itself off
 automatically.
+
+An
+[article at Henry's Bench](http://henrysbench.capnfatz.com/henrys-bench/arduino-projects-tips-and-more/powering-the-esp-12e-nodemcu-development-board/) 
+explains different possibilities in powering the nodemci-devkit board.
