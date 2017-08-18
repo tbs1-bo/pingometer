@@ -38,14 +38,17 @@ Sketch
 - The servo is connected to the VCC and Ground for power supply.
 - GPIO12 (or what ever is configured) is used as PWM pin for
   controlling the servo.
-- GPIO16 and REST are connected to awake the ESP8266 from deep sleep
+- GPIO16 and RESET are connected to awake the ESP8266 from deep sleep
   mode. GPIO16 is the only pin that can be used for this purpose.
+- Power supply via VIN. Since this pin is controlled by a power
+  regulator, up to 10V can be used.
 
 Configuration
 -------------
 
 Move [config_sample.py](config_sample.py) to `config.py` and adjust
-the values. The file contains comment that explain what the values actually mean.
+the values. The file contains comments that explain what the values
+actually mean.
 
 Installation
 ------------
@@ -82,6 +85,9 @@ power. The easiest way to do this would be to use a small
 powerbank. However, since the ESP8266 has very low power consumption
 of about 20 µA in deep sleep mode, the powerbank may turn itself off
 automatically.
+
+The VIN pin of the nocdemcu devkit is connected to a power
+regulator. Therefore a 9V battery can be attached to power the board.
 
 An
 [article at Henry's Bench](http://henrysbench.capnfatz.com/henrys-bench/arduino-projects-tips-and-more/powering-the-esp-12e-nodemcu-development-board/) 
