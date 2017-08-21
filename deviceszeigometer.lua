@@ -19,11 +19,11 @@ conf.deepsleep = {
    -- how many us to sleep
    sleeptime = 5000000
 }
+
+-- remember probes and clients in this table
 clients = {}
 
 function probe_received_cb(T)
-   -- print("\n\tAP - PROBE REQUEST RECEIVED".."\n\tMAC: ".. T.MAC.."\n\tRSSI: "..T.RSSI)
-
    -- check if client already seen
    if clients[T.MAC] == nil then
       clients[T.MAC] = {}
@@ -43,12 +43,14 @@ function probe_received_cb(T)
 			  vars.rssi, 1, 1)
    end
    print("#probes: "..count)
-   --                                          qos retain
-   mqtt_client:publish(conf.mqtt.topic..'/numprobes', count, 1, 1)
+
+   mqtt_client:publish(conf.mqtt.topic..'/numprobes',
+		       --    qos retain
+		       count, 1, 1)
 end
 
 function got_ip_cb()
-   print("connected to wifi with:"..wifi.sta.getip())
+   print("connected to wifi with IP "..wifi.sta.getip())
    mqtt_client = mqtt.Client("zeigometer", 100)
    mqtt_client:connect(conf.mqtt.host, conf.mqtt.port, 0,
 		       -- callback when connected
@@ -83,6 +85,3 @@ timer:register(conf.deepsleep.time_before_sleep,
 timer:start()
 
 wifi.sta.config(sta_config)
-
--- require "deviceszeigometer"
--- dofile("deviceszeigometer.lua")
