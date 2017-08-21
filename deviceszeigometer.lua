@@ -66,7 +66,9 @@ end
 
 function time_elapsed_cb()
    print("entering deep sleep mode")
-   mqtt_client:publish(conf.mqtt.topic..'/status', 'deep sleep', 1, 1)
+   msg = 'deep sleep for '..(conf.deepsleep.sleeptime/1000000)..' seconds'
+   print(msg)
+   mqtt_client:publish(conf.mqtt.topic..'/status', msg , 1, 1)
    -- waiting some time for the message to be published
    local timer = tmr.create()
    --          ms
