@@ -57,14 +57,17 @@ end
 
 function mqtt_connected_cb()
    print("connected to mqtt broker")
+   mqtt_client:publish(conf.mqtt.topic..'/status', 'connected to mqtt', 1, 1)
    wifi.eventmon.register(wifi.eventmon.AP_PROBEREQRECVED,
 			  probe_received_cb)
 end
 
 function time_elapsed_cb()
-   print("time over")
-   -- TODO enter deep sleep mode
+   print("entering deep sleep mode")
+   mqtt_client:publish(conf.mqtt.topic..'/status', 'deep sleep', 1, 1)
+   -- enter deep sleep mode
    -- https://nodemcu.readthedocs.io/en/master/en/modules/node/#nodedsleep
+   node.dsleep(conf.deepsleep.sleeptime)
 end
 
 -- configure station and start connection
@@ -74,7 +77,9 @@ sta_config.pwd = WIFI_PASSWORD
 sta_config.got_ip_cb = got_ip_cb
 
 local timer = tmr.create()
-timer:register(10000, tmr.ALARM_SINGLE, time_elapsed_cb)
+timer:register(conf.deepsleep.time_before_sleep,
+	       tmr.ALARM_SINGLE,
+	       time_elapsed_cb)
 timer:start()
 
 wifi.sta.config(sta_config)
