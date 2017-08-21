@@ -5,11 +5,9 @@
 -- from
 -- https://nodemcu.readthedocs.io/en/master/en/modules/wifi/#wifieventmonregister
 
-conf = {}
-conf.wifi = {}
-conf.wifi.ssid = "XXXXX"
-conf.wifi.password = "XXXX"
+require "credentials"
 
+conf = {}
 conf.mqtt = {}
 conf.mqtt.host = "iot.eclipse.org"
 conf.mqtt.port = 1883
@@ -19,8 +17,8 @@ clients = {}
 
 function connect_to_ssid()
    sta_config={}
-   sta_config.ssid = conf.wifi.ssid
-   sta_config.pwd = conf.wifi.password
+   sta_config.ssid = WIFI_SSID
+   sta_config.pwd = WIFI_PASSWORD
    wifi.sta.config(sta_config)
 end
 
