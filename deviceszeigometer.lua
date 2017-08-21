@@ -15,14 +15,7 @@ conf.mqtt.topic = "zeigometer"
 
 clients = {}
 
-function connect_to_ssid()
-   sta_config={}
-   sta_config.ssid = WIFI_SSID
-   sta_config.pwd = WIFI_PASSWORD
-   wifi.sta.config(sta_config)
-end
-
-function probe_received(T)
+function probe_received_cb(T)
    -- print("\n\tAP - PROBE REQUEST RECEIVED".."\n\tMAC: ".. T.MAC.."\n\tRSSI: "..T.RSSI)
 
    -- check if client already seen
@@ -31,26 +24,39 @@ function probe_received(T)
    else
       clients[T.MAC] = 1
    end
-   
+
    count = 0
    for k,v in pairs(clients) do
-      count = anzahl + 1
+      count = count + 1
       print("key:"..k.." val:"..v)
       mqtt_client:publish(conf.mqtt.topic..'/probe/'..k, v, 1, 1)
    end
-   print("#probes"..count)
+   print("#probes: "..count)
    --                                          qos retain
    mqtt_client:publish(conf.mqtt.topic..'/numprobes', count, 1, 1)
 end
 
-connect_to_ssid()
+function got_ip_cb()
+   print("connected to wifi with:"..wifi.sta.getip())
+   mqtt_client = mqtt.Client("zeigometer", 100)
+   mqtt_client:connect(conf.mqtt.host, conf.mqtt.port, 0,
+		       -- callback when connected
+		       mqtt_connected_cb)
+end
 
+function mqtt_connected_cb()
+   print("connected to mqtt broker")
+   wifi.eventmon.register(wifi.eventmon.AP_PROBEREQRECVED,
+			  probe_received_cb)
+end
 
-mqtt_client = mqtt.Client("zeigometer", 100)
-mqtt_client:connect(conf.mqtt.host, conf.mqtt.port)
+-- configure station and start connection
+sta_config={}
+sta_config.ssid = WIFI_SSID
+sta_config.pwd = WIFI_PASSWORD
+sta_config.got_ip_cb = got_ip_cb
 
-
-wifi.eventmon.register(wifi.eventmon.AP_PROBEREQRECVED, probe_received)
+wifi.sta.config(sta_config)
 
 -- require "deviceszeigometer"
 -- dofile("deviceszeigometer.lua")
