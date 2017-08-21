@@ -8,10 +8,11 @@
 require "credentials"
 
 conf = {}
-conf.mqtt = {}
-conf.mqtt.host = "iot.eclipse.org"
-conf.mqtt.port = 1883
-conf.mqtt.topic = "zeigometer"
+conf.mqtt = {
+   host = "iot.eclipse.org",
+   port = 1883,
+   topic = "zeigometer"
+}
 
 clients = {}
 
