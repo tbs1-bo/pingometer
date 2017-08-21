@@ -32,22 +32,25 @@ function probe_received(T)
       clients[T.MAC] = 1
    end
    
-   anzahl = 0
+   count = 0
    for k,v in pairs(clients) do
-      anzahl = anzahl + 1
+      count = anzahl + 1
       print("key:"..k.." val:"..v)
       mqtt_client:publish(conf.mqtt.topic..'/probe/'..k, v, 1, 1)
    end
-   print("#probes"..anzahl)
+   print("#probes"..count)
    --                                          qos retain
-   mqtt_client:publish(conf.mqtt.topic..'/numprobes', anzahl, 1, 1)
+   mqtt_client:publish(conf.mqtt.topic..'/numprobes', count, 1, 1)
 end
 
 connect_to_ssid()
 
-wifi.eventmon.register(wifi.eventmon.AP_PROBEREQRECVED, probe_received)
+
 mqtt_client = mqtt.Client("zeigometer", 100)
 mqtt_client:connect(conf.mqtt.host, conf.mqtt.port)
+
+
+wifi.eventmon.register(wifi.eventmon.AP_PROBEREQRECVED, probe_received)
 
 -- require "deviceszeigometer"
 -- dofile("deviceszeigometer.lua")
