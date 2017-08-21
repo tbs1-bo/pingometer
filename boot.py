@@ -7,5 +7,12 @@
 import gc
 import zeigometer
 
+import time
+
+# some rescue time we will wait before something happens.
+# comment out if sure that everything works fine.
+#
+time.sleep(5)
+
 gc.collect()
 zeigometer.main()
