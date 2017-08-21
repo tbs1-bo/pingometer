@@ -67,9 +67,16 @@ end
 function time_elapsed_cb()
    print("entering deep sleep mode")
    mqtt_client:publish(conf.mqtt.topic..'/status', 'deep sleep', 1, 1)
-   -- enter deep sleep mode
-   -- https://nodemcu.readthedocs.io/en/master/en/modules/node/#nodedsleep
-   node.dsleep(conf.deepsleep.sleeptime)
+   -- waiting some time for the message to be published
+   local timer = tmr.create()
+   --          ms
+   timer:alarm(500, tmr.ALARM_SINGLE,
+	       function()
+		  -- enter deep sleep mode
+		  -- https://nodemcu.readthedocs.io/en/master/en/modules/node/#nodedsleep
+		  node.dsleep(conf.deepsleep.sleeptime)
+	       end
+   )
 end
 
 -- configure station and start connection
