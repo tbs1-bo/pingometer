@@ -13,7 +13,12 @@ conf.mqtt = {
    port = 1883,
    topic = "zeigometer"
 }
-
+conf.deepsleep = {
+   -- how many ms to wait before sleeping
+   time_before_sleep = 15000,
+   -- how many us to sleep
+   sleeptime = 5000000
+}
 clients = {}
 
 function probe_received_cb(T)
