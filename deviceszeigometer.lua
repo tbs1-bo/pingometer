@@ -15,9 +15,9 @@ conf.mqtt = {
 }
 conf.deepsleep = {
    -- how many ms to wait before sleeping
-   time_before_sleep = 15000,
+   time_before_sleep = 60000,
    -- how many us to sleep
-   sleeptime = 5000000
+   sleeptime = 300000000
 }
 
 -- remember probes and clients in this table
