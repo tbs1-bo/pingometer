@@ -4,7 +4,7 @@ import time
 import socket
 import config
 
-
+# TODO better switch to an MQTT client.
 class WifiClient:
     def __init__(self, ssid, passwd):
         self.ssid = ssid
