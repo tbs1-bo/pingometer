@@ -5,6 +5,8 @@ import socket
 import config
 
 # TODO better switch to an MQTT client.
+# register timer, wait for message or messages
+# deep sleep.
 class WifiClient:
     def __init__(self, ssid, passwd):
         self.ssid = ssid
