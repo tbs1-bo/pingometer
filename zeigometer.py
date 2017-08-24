@@ -3,10 +3,9 @@ import network
 import time
 import socket
 import config
+import umqtt.simple
 
-# TODO better switch to an MQTT client.
-# register timer, wait for message or messages
-# deep sleep.
+
 class WifiClient:
     def __init__(self, ssid, passwd):
         self.ssid = ssid
@@ -29,29 +28,6 @@ class WifiClient:
 
     def disconnect(self):
         self.sta_if.disconnect()
-
-    def http_get_value(self, url):
-        _, _, host, path = url.split('/', 3)
-        addr = socket.getaddrinfo(host, 80)[0][-1]
-        s = socket.socket()
-        s.connect(addr)
-        s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host),
-                     'utf8'))
-
-        # two new lines separate the header from the payload
-        header_payload_separator = b'\r\n\r\n'
-        while True:
-            data = s.recv(100)
-
-            if header_payload_separator in data:
-                # the last 100 Bytes should contain the payload
-                val = data.split(header_payload_separator)[-1]
-                print("converting", val)
-                val = int(val.strip())
-                s.close()
-                return val
-
-        s.close()
 
 
 class Servo:
@@ -88,11 +64,40 @@ class Servo:
         if not 0 <= rightiness <= 100:
             print("ignoring wrong value range")
             return
-        
+
         delta_lr = self.right - self.left
         dc = self.left + delta_lr * rightiness / 100
         print("change dc to", int(dc))
         self.pwm.duty(int(dc))
+
+
+class ServoController:
+    def __init__(self, host, topic, servo, keepalive=5, qos=1):
+        self.topic = topic
+        self.host = host
+        self.servo = servo
+        self.keepalive = keepalive
+        self.qos = qos
+
+    def loop_forever(self):
+        mqtt = umqtt.simple.MQTTClient('esp123', self.host,
+                                       keepalive=self.keepalive)
+        mqtt.set_callback(lambda _topic, value:
+                          self._change_needle(value))
+        print("connecting to MQTT Broker")
+        mqtt.connect()
+        print("Subscribing to topic", self.topic)
+        mqtt.subscribe(self.topic, self.qos)
+        print("Awaiting messages from Broker")
+        while True:
+            mqtt.wait_msg()
+
+    def _change_needle(self, val):
+        try:
+            newval = int(val)
+            self.servo.change_needle(newval)
+        except Exception as ex:
+            print("Exception occured", ex)
 
 
 def deepsleep():
@@ -105,15 +110,11 @@ def deepsleep():
     rtc = machine.RTC()
     rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
     # set alarm time (in ms)
-    print("setting alarm", config.DEEPSLEEP_TIME)
+    print("setting alarm for RTC", config.DEEPSLEEP_TIME)
     rtc.alarm(rtc.ALARM0, config.DEEPSLEEP_TIME)
     # sleep
     print("starting deep sleep...")
     machine.deepsleep()
-
-
-def callback(msg, topic):
-    print("received", msg, topic)
 
 
 def main():
@@ -128,20 +129,16 @@ def main():
     # servo.left_right_center()
     # servo.left_to_right()
 
-    try:
-        val = wifi.http_get_value(config.DATA_URL)
-        if val is not None:
-            print("Got value", val)
-            servo.change_needle(val)
-    except Exception as ex:
-        print("Error occured", ex)
+    # start timer
+    tim = machine.Timer(0)
+    print("Timer for deepsleep will elapse in (ms)", config.MAX_UPTIME)
+    tim = tim.init(period=config.MAX_UPTIME,
+                   mode=machine.Timer.ONE_SHOT,
+                   callback=lambda _timer: deepsleep())
 
-    print("disconnecting from WiFi")
-    wifi.disconnect()
-
-    # go into sleep mode
-    print("going into deep sleep mode")
-    deepsleep()
+    print("Creating servo controller")
+    servo_con = ServoController(config.MQTT_HOST, config.MQTT_TOPIC, servo)
+    servo_con.loop_forever()
 
 
 if __name__ == "__main__":
