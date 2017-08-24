@@ -9,6 +9,8 @@ import zeigometer
 
 import time
 
+print("started")
+
 # some rescue time we will wait before something happens.
 # comment out if sure that everything works fine.
 #
