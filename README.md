@@ -4,11 +4,11 @@ Zeigometer
 ![zeigometer](doc/zeigometer.jpg)
 
 The zeigometer is an autonmous device that can show a value on a
-scale. It can be made of a an ESP8266, a servo motor, a powerbank and
+scale. It can be made of a an ESP8266, a servo motor, a powerbank or battery and
 some housing - I used an ice-cream package for this.
 
-The servo motor is connected to an ESP8266, reads analog values from a
-web ressource and  sends the value to a servo that visualizes the value
+The servo motor is connected to an ESP8266, reads analog values from an
+MQTT Broker and  sends the value to a servo that visualizes the value
 on a scale. The project is mainly inspired by the
 [pingo meter project](https://www.raspberrypi.org/magpi/pingometer/)
 from the Raspberry Pi Magazine.
@@ -20,9 +20,10 @@ Here is what the device actually does.
 
 1. Power on
 2. Connect to a pre-configured Wifi-AP
-3. Fetch a value from a pre-configured web ressource. The ressource
-   can be a file on a webserver. I should only contain an integer
-   value between 0 and 100.
+3. Fetch a message from an MQTT Broker from a given topic. The message
+   type must be an integer value between 0 and 100. Use retained
+   messages when posting to this topic such that the client receives
+   older messages.
 4. Adjust the needle connected to a servo motor to reflect the value -
    0=left, 100=right.
 5. Go into deep sleep for some pre-configured period of time.
@@ -47,8 +48,8 @@ Configuration
 -------------
 
 Move [config_sample.py](config_sample.py) to `config.py` and adjust
-the values. The file contains comments that explain what the values
-actually mean.
+the values. The file contains comments that explain what the purpose
+of the values.
 
 Installation
 ------------
@@ -57,8 +58,8 @@ The ESP8266 needs to be
 [flashed with a Micropython firmware](http://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#deploying-the-firmware).
 
 Transfer all python files onto the ESP8266. A tool
-like [ampy](https://github.com/adafruit/ampy) helps a lot during this
-process.
+like [ampy](https://github.com/adafruit/ampy) and
+the [deploy.sh](deploy.sh) script will help a lot during this process.
 
 
 Making
