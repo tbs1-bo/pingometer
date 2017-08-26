@@ -88,7 +88,8 @@ of about 20 µA in deep sleep mode, the powerbank may turn itself off
 automatically.
 
 The VIN pin of the nocdemcu devkit is connected to a power
-regulator. Therefore a 9V battery can be attached to power the board.
+regulator. Therefore a single 9V battery or a 4 x 1.5V battery pack
+can be attached to power the board.
 
 An
 [article at Henry's Bench](http://henrysbench.capnfatz.com/henrys-bench/arduino-projects-tips-and-more/powering-the-esp-12e-nodemcu-development-board/) 
